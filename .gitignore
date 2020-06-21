@@ -25,3 +25,4 @@ ENV/
 
 test_audio/
 .idea/
+output/

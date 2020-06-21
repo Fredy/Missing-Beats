@@ -1,5 +1,13 @@
+import os
+
 import numpy as np
 from scipy.io import wavfile
+
+
+def get_file_name(file):
+    """Return the file name without its extension"""
+    base = os.path.basename(file)
+    return os.path.splitext(base)[0]
 
 
 def _set_values(input_, output, in_idx, out_idx, leap):
@@ -7,7 +15,7 @@ def _set_values(input_, output, in_idx, out_idx, leap):
         input_[in_idx * leap: (in_idx + 1) * leap])
 
 
-def remove_beats(file: str, bpm: float, output_dir="./"):
+def remove_beats(file: str, bpm: float, output_dir="./output"):
     """
     Deletes beats from a song and save two files one with even beats and other
     with odd beats.
@@ -33,10 +41,15 @@ def remove_beats(file: str, bpm: float, output_dir="./"):
         _set_values(non_silent_data, non_silent_result_odd, j, i, beat_rate)
 
     result = np.zeros_like(data)
-
     # first_idx_data is to add some silence at the end
     duration = data.shape[0] // 2 + first_idx_data
+
+    os.makedirs(output_dir, exist_ok=True)
+
     result[first_idx_data:] = non_silent_result_even
-    wavfile.write('./test_audio/test_even.wav', rate, result[:duration])
+    output_file = os.path.join(output_dir, f'{get_file_name(file)}_even.wav')
+    wavfile.write(output_file, rate, result[:duration])
+
     result[first_idx_data:] = non_silent_result_odd
-    wavfile.write('./test_audio/test_odd.wav', rate, result[:duration])
+    output_file = os.path.join(output_dir, f'{get_file_name(file)}_odd.wav')
+    wavfile.write(output_file, rate, result[:duration])
