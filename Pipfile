@@ -10,6 +10,8 @@ scipy = "*"
 ipython = "*"
 numpy = "*"
 requests = "*"
+youtube-dl = "*"
+ffmpeg-python = "*"
 
 [requires]
 python_version = "3.8"
